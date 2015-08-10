@@ -48,6 +48,18 @@ PHP_INI_END()
    so that your module can be compiled into PHP, it exists only for testing
    purposes. */
 
+void describe_zval(zval *foo)
+{
+  if ( Z_TYPE_P(foo) == IS_NULL )
+  {
+      php_printf("这个变量的数据类型是： NULL\n");
+  }
+  else
+  {
+      php_printf("这个变量的数据类型不是NULL，这种数据类型对应的数字是： %s\n", Z_TYPE_P(foo));
+  }
+}
+
 /* Every user-visible function in PHP should document itself in the source */
 /* {{{ proto string confirm_myip_compiled(string arg)
    Return a string to confirm that the module is compiled in */
@@ -57,11 +69,16 @@ PHP_FUNCTION(confirm_myip_compiled)
 	size_t arg_len, len;
 	zend_string *strg;
 
+
 	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
 		return;
 	}
 
+
+
 	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "myip", arg);
+
+  describe_zval(strg);
 
 	RETURN_STR(strg);
 }
@@ -78,15 +95,34 @@ PHP_FUNCTION(ip2long32)
 {
 	char *ip = NULL;
 	int argc = ZEND_NUM_ARGS();
-	size_t ip_len;
+  char *strg;
+	size_t ip_len,len;
 
-	if (zend_parse_parameters(argc TSRMLS_CC, "s", &ip, &ip_len) == FAILURE) 
+	if (zend_parse_parameters(argc TSRMLS_CC, "s", &ip, &ip_len) == FAILURE)
 		return;
 
-	php_error(E_WARNING, "ip2long32: not yet implemented");
+	/* php_error(E_WARNING, "ip2long32: not yet implemented"); */
+  php_printf("p的值是%s\n", ip);
+  php_printf("char ip变量指针地址是%p\n", ip);
+
+  len = spprintf(&strg, 0, "Your input string: %s/n", ip);
+  //php_printf("ip变量类型 %s\n", Z_TYPE_P(ip) );
+  RETURN_STRINGL(strg, len);
 }
 /* }}} */
 
+PHP_FUNCTION(self_concat)
+{
+  char *str = NULL;
+  int argc = ZEND_NUM_ARGS();
+  int str_len;
+  long n;
+
+  if (zend_parse_parameters(argc TSRMLS_CC, "sl", &str, &str_len, &n) == FAILURE)
+    return;
+
+  php_error(E_WARNING, "self_concat: not yet implemented");
+}
 
 /* {{{ php_myip_init_globals
  */

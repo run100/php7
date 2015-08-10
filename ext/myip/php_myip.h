@@ -62,6 +62,7 @@ ZEND_TSRMLS_CACHE_EXTERN();
 #define MYIP_G(v) (myip_globals.v)
 #endif
 
+PHP_FUNCTION(self_concat);
 #endif	/* PHP_MYIP_H */
 
 
